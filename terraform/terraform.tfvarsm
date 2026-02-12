@@ -1,0 +1,5 @@
+project         = "Kafka-project"
+cloud           = "aws-us-east-2"
+kafka_plan      = "business-4"
+pg_plan         = "startup-4"
+opensearch_plan = "business-4"

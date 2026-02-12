@@ -1,0 +1,2 @@
+project = "YOUR_AIVEN_PROJECT_NAME"
+cloud   = "aws-us-east-1"

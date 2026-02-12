@@ -1,0 +1,41 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "kafka:smoke": "npx tsx ./scripts/kafka-smoke.ts",
+    "pg:smoke": "npx tsx ./scripts/pg-smoke.ts",
+    "produce": "npx tsx ./scripts/produce-kafkajs.ts",
+    "db:init": "npx tsx ./scripts/db-init.ts",
+    "consume:events": "npx tsx ./scripts/consume-events.ts",
+    "consume:sessions": "npx tsx ./scripts/consume-sessionize.ts",
+    "db:count:events": "psql \"$PG_DSN\" -c \"select count(*) from clickstream_events;\"",
+    "db:count:sessions": "psql \"$PG_DSN\" -c \"select count(*) from clickstream_sessions;\"",
+    "db:truncate": "psql \"$PG_DSN\" -c \"truncate clickstream_events, clickstream_sessions;\"",
+    "db:reset": "psql \"$PG_DSN\" -c \"drop table if exists clickstream_events cascade; drop table if exists clickstream_sessions cascade;\" && npm run db:init",
+    "demo:reset": "npm run db:reset",
+    "demo:consumer": "npm run consume:events",
+    "demo:burst": "PRODUCE_COUNT=500 PRODUCE_INTERVAL_MS=50 npm run produce",
+    "demo:proof": "psql \"$PG_DSN\" -c \"select count(*) as events, count(distinct user_id) as users, min(ts) as first_event, max(ts) as last_event from clickstream_events;\" && psql \"$PG_DSN\" -c \"select page, count(*) as hits from clickstream_events group by 1 order by 2 desc limit 10;\" && psql \"$PG_DSN\" -c \"select ts, user_id, page, referrer, device from clickstream_events order by ts desc limit 10;\"",
+    "demo:steps": "node ./scripts/demo-steps.js",
+    "demo:grafana:queries": "node ./scripts/demo-grafana-queries.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "kafkajs": "^2.2.4",
+    "node-rdkafka": "^3.6.1",
+    "pg": "^8.18.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/pg": "^8.16.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "description": ""
+}
